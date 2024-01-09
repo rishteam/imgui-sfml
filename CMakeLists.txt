@@ -26,9 +26,11 @@ if(IMGUI_SFML_FIND_SFML)
   if(NOT BUILD_SHARED_LIBS)
     set(SFML_STATIC_LIBRARIES ON)
   endif()
-  find_package(SFML 2.5 REQUIRED COMPONENTS graphics)
+#  find_package(SFML 2.5 REQUIRED COMPONENTS graphics)
 endif()
 
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+set(IMGUI_INCLUDE_DIR ${IMGUI_DIR})
 # ImGui does not provide native support for CMakeLists, workaround for now to have
 # users specify IMGUI_DIR. Waiting for this PR to get merged...
 #    https://github.com/ocornut/imgui/pull/1713
@@ -38,7 +40,8 @@ if(NOT IMGUI_DIR)
 endif()
 
 # This uses FindImGui.cmake provided in ImGui-SFML repo for now
-find_package(ImGui 1.89 REQUIRED)
+#find_package(ImGui 1.89 REQUIRED)
+add_subdirectory(imgui)
 
 # These headers will be installed alongside ImGui-SFML
 set(IMGUI_PUBLIC_HEADERS
@@ -75,7 +78,7 @@ target_include_directories(ImGui-SFML PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_compile_features(ImGui-SFML PUBLIC cxx_std_11)
-target_link_libraries(ImGui-SFML PUBLIC sfml-graphics OpenGL::GL)
+target_link_libraries(ImGui-SFML PUBLIC sfml-graphics OpenGL::GL imgui::imgui)
 if(WIN32 AND MINGW)
   target_link_libraries(ImGui-SFML PUBLIC imm32)
 endif()
@@ -124,19 +127,19 @@ endif()
 set_target_properties(ImGui-SFML PROPERTIES PUBLIC_HEADER "${IMGUI_SFML_PUBLIC_HEADERS}")
 
 # Installation rules
-install(TARGETS ImGui-SFML
-  EXPORT ImGui-SFML
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(EXPORT ImGui-SFML
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui-SFML
-  NAMESPACE ImGui-SFML::
-  FILE ImGui-SFMLConfig.cmake
-)
+#install(TARGETS ImGui-SFML
+#  EXPORT ImGui-SFML
+#  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#)
+#
+#install(EXPORT ImGui-SFML
+#  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ImGui-SFML
+#  NAMESPACE ImGui-SFML::
+#  FILE ImGui-SFMLConfig.cmake
+#)
 
 # Stop configuration if being consumed by a higher level project
 if(NOT PROJECT_IS_TOP_LEVEL)
